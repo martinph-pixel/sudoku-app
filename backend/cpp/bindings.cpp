@@ -9,8 +9,7 @@ namespace py = pybind11;
 
 std::vector<std::int32_t> generate_random_board(int size,
                                                 float percent_filled) {
-  const int board_size = size * size;
-  SudokuBoard board(board_size, board_size);
+  SudokuBoard board(size);
   return board.generateRandomBoard(percent_filled);
 }
 
