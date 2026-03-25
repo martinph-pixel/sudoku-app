@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+import numpy as np
+import sudoku
 
 app = FastAPI()
 
@@ -18,6 +20,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/ping")
 async def ping():
-    return {"status" : "OK"}
+    return {"status": "OK"}
+
+
+@app.get("/board")
+async def board(
+    size: int = Query(..., ge=2), percent_filled: float = Query(..., ge=0.0, le=100.0)
+):
+    flat = sudoku.generate_random_board(size, percent_filled)
+    N = size * size
+
+    return np.array(flat).reshape((N, N)).tolist()

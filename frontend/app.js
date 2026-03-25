@@ -1,6 +1,13 @@
 const BOX_SIZE = 3;
 const SIZE = BOX_SIZE * BOX_SIZE;
 
+const API_CONFIG = {
+    baseURL: "http://localhost:5000",
+    endpoints: {
+        board: "/board"
+    }
+}
+
 function createEmptyGrid(size) {
     const grid = Array(size);
     for (let r = 0; r < size; r++) {
@@ -10,6 +17,22 @@ function createEmptyGrid(size) {
         }
     }
     return grid;
+}
+
+function createRandomGrid(size, filledDensity = 0.0) {
+    const url = new URL(API_CONFIG.endpoints.board, API_CONFIG.baseURL);
+    url.searchParams.set('size', size);
+    url.searchParams.set('percent_filled', filledDensity);
+    return fetch(url).then(res => {
+        if (!res.ok) {
+            throw new Error(`Failed to fetch board: ${res.statusText}`);
+        }
+        return res.json();
+    }).then(data => {
+        return data;
+    }).catch(error => {
+        console.error("Error fetching board:", error);
+    });
 }
 
 function renderBoard(grid, boxSz, selectedRow, selectedCol, cellClickedCB) {
@@ -50,9 +73,10 @@ function renderBoard(grid, boxSz, selectedRow, selectedCol, cellClickedCB) {
     return board;
 }
 
-function main() {
+async function main() {
     const app = document.getElementById("app");
-    const grid = createEmptyGrid(SIZE);
+    const grid = await createRandomGrid(BOX_SIZE);
+    console.log("Generated grid: ", grid);
 
     let selectedRow = null;
     let selectedCol = null;

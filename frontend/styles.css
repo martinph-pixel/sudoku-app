@@ -35,6 +35,6 @@ h1 {
 }
 
 .cell.selected {
-  background-color: #cce5ff;
+  background-color: white;
   border: 2px solid yellow;
 }
